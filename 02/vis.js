@@ -154,12 +154,12 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
 
       flightEnter.append("div")
           .attr("class", "distance")
-          .text(d => formatNumber(d.distance) + " mi.");
+          .text(d => `${formatNumber(d.distance)} mi.`);
 
       flightEnter.append("div")
           .attr("class", "delay")
           .classed("early", d => d.delay < 0)
-          .text(d => formatChange(d.delay) + " min.");
+          .text(d => `${formatChange(d.delay)} min.`);
 
       flightEnter.merge(flight);
 
@@ -197,7 +197,7 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
         // Create the skeletal chart.
         if (g.empty()) {
           div.select(".title").append("a")
-              .attr("href", "javascript:reset(" + id + ")")
+              .attr("href", `javascript:reset(${id})`)
               .attr("class", "reset")
               .text("reset")
               .style("display", "none");
@@ -206,10 +206,10 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
               .attr("width", width + margin.left + margin.right)
               .attr("height", height + margin.top + margin.bottom)
             .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+              .attr("transform", `translate(${margin.left},${margin.top})`);
 
           g.append("clipPath")
-              .attr("id", "clip-" + id)
+              .attr("id", `clip-${id}`)
             .append("rect")
               .attr("width", width)
               .attr("height", height);
@@ -217,15 +217,15 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
           g.selectAll(".bar")
               .data(["background", "foreground"])
             .enter().append("path")
-              .attr("class", d => d + " bar")
+              .attr("class", d => `${d} bar`)
               .datum(group.all());
 
           g.selectAll(".foreground.bar")
-              .attr("clip-path", "url(#clip-" + id + ")");
+              .attr("clip-path", `url(#clip-${id})`);
 
           g.append("g")
               .attr("class", "axis")
-              .attr("transform", "translate(0," + height + ")")
+              .attr("transform", `translate(0,${height})`)
               .call(axis);
 
           // Initialize the brush component with pretty resize handles.
@@ -252,7 +252,7 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
           if (!filterVal) {
             g.call(brush)
 
-            g.selectAll("#clip-" + id + " rect")
+            g.selectAll(`#clip-${id} rect`)
                 .attr("x", 0)
                 .attr("width", width);
 
@@ -284,15 +284,7 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
         const e = +(d.type == "e");
         const x = e ? 1 : -1;
         const y = height / 3;
-        return "M" + (.5 * x) + "," + y
-            + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6)
-            + "V" + (2 * y - 6)
-            + "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y)
-            + "Z"
-            + "M" + (2.5 * x) + "," + (y + 8)
-            + "V" + (2 * y - 8)
-            + "M" + (4.5 * x) + "," + (y + 8)
-            + "V" + (2 * y - 8);
+        return `M${.5 * x},${y}A6,6 0 0 ${e} ${6.5 * x},${y + 6}V${2 * y - 6}A6,6 0 0 ${e} ${.5 * x},${2 * y}ZM${2.5 * x},${y + 8}V${2 * y - 8}M${4.5 * x},${y + 8}V${2 * y - 8}`;
       }
     }
 
@@ -332,10 +324,10 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
       // move brush handles to start and end of range
       g.selectAll(".brush-handle")
           .style("display", null)
-          .attr("transform", (d, i) => "translate(" + activeRange[i] + ", 0)");
+          .attr("transform", (d, i) => `translate(${activeRange[i]}, 0)`);
 
       // resize sliding window to reflect updated range
-      g.select("#clip-" + id + " rect")
+      g.select(`#clip-${id} rect`)
           .attr("x", activeRange[0])
           .attr("width", activeRange[1] - activeRange[0]);
 
