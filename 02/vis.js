@@ -1,5 +1,5 @@
 // (It's CSV, but GitHub Pages only gzip's JSON at the moment.)
-d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", function(error, flights) {
+d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights) => {
 console.log(flights.length)
   // Various formatters.
   var formatNumber = d3.format(",d"),
@@ -9,10 +9,10 @@ console.log(flights.length)
 
   // A nest operator, for grouping the flight list.
   var nestByDate = d3.nest()
-      .key(function(d) {return d3.timeDay(d.date)});
+      .key(d => d3.timeDay(d.date));
 
   // A little coercion, since the CSV is untyped.
-  flights.forEach(function(d, i) {
+  flights.forEach((d, i) => {
     d.index = i;
     d.date = parseDate(d.date);
     d.delay = +d.delay;
@@ -22,14 +22,14 @@ console.log(flights.length)
   // Create the crossfilter for the relevant dimensions and groups.
   var flight = crossfilter(flights),
       all = flight.groupAll(),
-      date = flight.dimension(function(d) {return d.date}),
+      date = flight.dimension(d => d.date),
       dates = date.group(d3.timeDay),
-      hour = flight.dimension(function(d) {return d.date.getHours() + d.date.getMinutes() / 60}),
+      hour = flight.dimension(d => d.date.getHours() + d.date.getMinutes() / 60),
       hours = hour.group(Math.floor),
-      delay = flight.dimension(function(d) {return Math.max(-60, Math.min(149, d.delay))}),
-      delays = delay.group(function(d) {return Math.floor(d / 10) * 10}),
-      distance = flight.dimension(function(d) {return Math.min(1999, d.distance)}),
-      distances = distance.group(function(d) {return Math.floor(d / 50) * 50});
+      delay = flight.dimension(d => Math.max(-60, Math.min(149, d.delay))),
+      delays = delay.group(d => Math.floor(d / 10) * 10),
+      distance = flight.dimension(d => Math.min(1999, d.distance)),
+      distances = distance.group(d => Math.floor(d / 50) * 50);
 
   var charts = [
 
@@ -102,12 +102,12 @@ console.log(flights.length)
         d.substring(6, 8));
   }
 
-  window.filter = function(filters) {
-    filters.forEach(function(d, i) {charts[i].filter(d)});
+  window.filter = filters => {
+    filters.forEach((d, i) => {charts[i].filter(d)});
     renderAll();
   };
 
-  window.reset = function(i) {
+  window.reset = i => {
     charts[i].filter(null);
     renderAll();
   };
@@ -117,7 +117,7 @@ console.log(flights.length)
 
     div.each(function() {
       var date = d3.select(this).selectAll(".date")
-          .data(flightsByDate, function(d) {return d.key});
+          .data(flightsByDate, d => d.key);
 
       date.exit().remove();
 
@@ -125,12 +125,12 @@ console.log(flights.length)
           .attr("class", "date")
         .append("div")
           .attr("class", "day")
-          .text(function(d) {return formatDate(d.values[0].date)})
+          .text(d => formatDate(d.values[0].date))
         .merge(date);
 
 
       var flight = date.order().selectAll(".flight")
-          .data(function(d) {return d.values}, function(d) {return d.index});
+          .data(d => d.values, d => d.index);
 
       flight.exit().remove();
 
@@ -139,24 +139,24 @@ console.log(flights.length)
 
       flightEnter.append("div")
           .attr("class", "time")
-          .text(function(d) {return formatTime(d.date)});
+          .text(d => formatTime(d.date));
 
       flightEnter.append("div")
           .attr("class", "origin")
-          .text(function(d) {return d.origin});
+          .text(d => d.origin);
 
       flightEnter.append("div")
           .attr("class", "destination")
-          .text(function(d) {return d.destination});
+          .text(d => d.destination);
 
       flightEnter.append("div")
           .attr("class", "distance")
-          .text(function(d) {return formatNumber(d.distance) + " mi."});
+          .text(d => formatNumber(d.distance) + " mi.");
 
       flightEnter.append("div")
           .attr("class", "delay")
-          .classed("early", function(d) {return d.delay < 0})
-          .text(function(d) {return formatChange(d.delay) + " min."});
+          .classed("early", d => d.delay < 0)
+          .text(d => formatChange(d.delay) + " min.");
 
       flightEnter.merge(flight);
 
@@ -214,7 +214,7 @@ console.log(flights.length)
           g.selectAll(".bar")
               .data(["background", "foreground"])
             .enter().append("path")
-              .attr("class", function(d) {return d + " bar"})
+              .attr("class", d => d + " bar")
               .datum(group.all());
 
           g.selectAll(".foreground.bar")
@@ -329,9 +329,7 @@ console.log(flights.length)
       // move brush handles to start and end of range
       g.selectAll(".brush-handle")
           .style("display", null)
-          .attr("transform", function(d, i) {
-            return "translate(" + activeRange[i] + ", 0)"
-          });
+          .attr("transform", (d, i) => "translate(" + activeRange[i] + ", 0)");
 
       // resize sliding window to reflect updated range
       g.select("#clip-" + id + " rect")
@@ -378,7 +376,7 @@ console.log(flights.length)
       return chart;
     };
 
-    chart.filter = function(_) {
+    chart.filter = _ => {
       if (!_) dimension.filterAll();
       brushDirty = _;
       return chart;
@@ -396,9 +394,7 @@ console.log(flights.length)
       return chart;
     };
 
-    chart.gBrush = function() {
-      return gBrush
-    }
+    chart.gBrush = () => gBrush
 
     return chart;
   }
