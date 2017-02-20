@@ -2,7 +2,9 @@ this iteration converts the code to [ES2015](https://babeljs.io/learn-es2015/) i
 
 forked from [@alexmacy](https://twitter.com/alexmacy)'s block: [Updated Crossfilter.js demo](https://bl.ocks.org/alexmacy/ebe599703421757852d36bcf71174dfc) 
 
-see also an [earlier iteration]() that retains the plot width and table width of the original Crossfilter example at [http://square.github.io/crossfilter/](http://square.github.io/crossfilter/)
+see also an [earlier iteration](https://bl.ocks.org/micahstubbs/6eab2af6785d9e01589f714131640f40) that retains the plot width and table width of the original Crossfilter example at [http://square.github.io/crossfilter/](http://square.github.io/crossfilter/)
+
+[commit history](https://github.com/micahstubbs/crossfilter-experiments/commits/master)
 
 ---
 

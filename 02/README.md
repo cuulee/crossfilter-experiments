@@ -4,6 +4,10 @@ forked from [@alexmacy](https://twitter.com/alexmacy)'s block: [Updated Crossfil
 
 this iteration retains the plot width and table width of the original Crossfilter example at [http://square.github.io/crossfilter/](http://square.github.io/crossfilter/)
 
+see also this [later iteration](https://bl.ocks.org/micahstubbs/66db7c01723983ff028584b6f304a54a) with improved plot and table widths
+
+[commit history](https://github.com/micahstubbs/crossfilter-experiments/commits/master)
+
 ---
 
 This is an updated version of [this demo](http://crossfilter.github.io/crossfilter/) of the crossfilter library. Crossfilter has been one of my favorite - and what I think to be on of the most underrated - JavaScript libraries. It hasn't seen much of any updates in quite a while, so I wanted to find out how it would work with version 4 of d3.js.
