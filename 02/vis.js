@@ -3,14 +3,14 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
   console.log(flights.length)
 
   // Various formatters.
-  var formatNumber = d3.format(",d");
+  const formatNumber = d3.format(",d");
 
-  var formatChange = d3.format("+,d");
-  var formatDate = d3.timeFormat("%B %d, %Y");
-  var formatTime = d3.timeFormat("%I:%M %p");
+  const formatChange = d3.format("+,d");
+  const formatDate = d3.timeFormat("%B %d, %Y");
+  const formatTime = d3.timeFormat("%I:%M %p");
 
   // A nest operator, for grouping the flight list.
-  var nestByDate = d3.nest()
+  const nestByDate = d3.nest()
       .key(d => d3.timeDay(d.date));
 
   // A little coercion, since the CSV is untyped.
@@ -22,19 +22,19 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
   });
 
   // Create the crossfilter for the relevant dimensions and groups.
-  var flight = crossfilter(flights);
+  const flight = crossfilter(flights);
 
-  var all = flight.groupAll();
-  var date = flight.dimension(d => d.date);
-  var dates = date.group(d3.timeDay);
-  var hour = flight.dimension(d => d.date.getHours() + d.date.getMinutes() / 60);
-  var hours = hour.group(Math.floor);
-  var delay = flight.dimension(d => Math.max(-60, Math.min(149, d.delay)));
-  var delays = delay.group(d => Math.floor(d / 10) * 10);
-  var distance = flight.dimension(d => Math.min(1999, d.distance));
-  var distances = distance.group(d => Math.floor(d / 50) * 50);
+  const all = flight.groupAll();
+  const date = flight.dimension(d => d.date);
+  const dates = date.group(d3.timeDay);
+  const hour = flight.dimension(d => d.date.getHours() + d.date.getMinutes() / 60);
+  const hours = hour.group(Math.floor);
+  const delay = flight.dimension(d => Math.max(-60, Math.min(149, d.delay)));
+  const delays = delay.group(d => Math.floor(d / 10) * 10);
+  const distance = flight.dimension(d => Math.min(1999, d.distance));
+  const distances = distance.group(d => Math.floor(d / 50) * 50);
 
-  var charts = [
+  const charts = [
 
     barChart()
         .dimension(hour)
@@ -71,11 +71,11 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
   // Given our array of charts, which we assume are in the same order as the
   // .chart elements in the DOM, bind the charts to the DOM and render them.
   // We also listen to the chart's brush events to update the display.
-  var chart = d3.selectAll(".chart")
-      .data(charts)
+  const chart = d3.selectAll(".chart")
+      .data(charts);
 
   // Render the initial lists.
-  var list = d3.selectAll(".list")
+  const list = d3.selectAll(".list")
       .data([flightList]);
 
   // Render the total.
@@ -116,10 +116,10 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
   };
 
   function flightList(div) {
-    var flightsByDate = nestByDate.entries(date.top(40));
+    const flightsByDate = nestByDate.entries(date.top(40));
 
     div.each(function() {
-      var date = d3.select(this).selectAll(".date")
+      const date = d3.select(this).selectAll(".date")
           .data(flightsByDate, d => d.key);
 
       date.exit().remove();
@@ -132,12 +132,12 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
         .merge(date);
 
 
-      var flight = date.order().selectAll(".flight")
+      const flight = date.order().selectAll(".flight")
           .data(d => d.values, d => d.index);
 
       flight.exit().remove();
 
-      var flightEnter = flight.enter().append("div")
+      const flightEnter = flight.enter().append("div")
           .attr("class", "flight");
 
       flightEnter.append("div")
@@ -170,29 +170,29 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
   function barChart() {
     if (!barChart.id) barChart.id = 0;
 
-    var margin = {top: 10, right: 10, bottom: 20, left: 10};
-    var x;
-    var y = d3.scaleLinear().range([100, 0]);
-    var id = barChart.id++;
-    var axis = d3.axisBottom();
-    var brush = d3.brushX();
-    var brushDirty;
-    var dimension;
-    var group;
-    var round;
-    var gBrush;
+    let margin = {top: 10, right: 10, bottom: 20, left: 10};
+    let x;
+    let y = d3.scaleLinear().range([100, 0]);
+    const id = barChart.id++;
+    const axis = d3.axisBottom();
+    const brush = d3.brushX();
+    let brushDirty;
+    let dimension;
+    let group;
+    let round;
+    let gBrush;
 
     function chart(div) {
-      var width = x.range()[1];
-      var height = y.range()[0];
+      const width = x.range()[1];
+      const height = y.range()[0];
 
       brush.extent([[0, 0], [width, height]])
 
       y.domain([0, group.top(1)[0].value]);
 
       div.each(function() {
-        var div = d3.select(this);
-        var g = div.select("g");
+        const div = d3.select(this);
+        let g = div.select("g");
 
         // Create the skeletal chart.
         if (g.empty()) {
@@ -244,7 +244,7 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
 
         // Only redraw the brush if set externally.
         if (brushDirty != false) {
-          var filterVal = brushDirty;
+          const filterVal = brushDirty;
           brushDirty = false;
 
           div.select(".title a").style("display", d3.brushSelection(div) ? null : "none");
@@ -260,7 +260,7 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
             renderAll();
 
           } else {
-            var range = filterVal.map(x)
+            const range = filterVal.map(x);
             brush.move(gBrush, range)
           }
         }
@@ -269,10 +269,10 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
       });
 
       function barPath(groups) {
-        var path = [];
-        var i = -1;
-        var n = groups.length;
-        var d;
+        const path = [];
+        let i = -1;
+        const n = groups.length;
+        let d;
         while (++i < n) {
           d = groups[i];
           path.push("M", x(d.key), ",", height, "V", y(d.value), "h9V", height);
@@ -281,9 +281,9 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
       }
 
       function resizePath(d) {
-        var e = +(d.type == "e");
-        var x = e ? 1 : -1;
-        var y = height / 3;
+        const e = +(d.type == "e");
+        const x = e ? 1 : -1;
+        const y = height / 3;
         return "M" + (.5 * x) + "," + y
             + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6)
             + "V" + (2 * y - 6)
@@ -297,17 +297,17 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
     }
 
     brush.on("start.chart", function() {
-      var div = d3.select(this.parentNode.parentNode.parentNode);
+      const div = d3.select(this.parentNode.parentNode.parentNode);
       div.select(".title a").style("display", null);
     });
 
     brush.on("brush.chart", function() {
-      var g = d3.select(this.parentNode);
-      var brushRange = d3.event.selection || d3.brushSelection(this); // attempt to read brush range
-      var xRange = x && x.range(); // attempt to read range from x scale
-      var activeRange = brushRange || xRange; // default to x range if no brush range available
+      const g = d3.select(this.parentNode);
+      const brushRange = d3.event.selection || d3.brushSelection(this); // attempt to read brush range
+      const xRange = x && x.range(); // attempt to read range from x scale
+      let activeRange = brushRange || xRange; // default to x range if no brush range available
 
-      var hasRange = activeRange &&
+      const hasRange = activeRange &&
                      activeRange.length === 2 &&
                      !isNaN(activeRange[0]) &&
                      !isNaN(activeRange[1]);
@@ -315,7 +315,7 @@ d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights
       if (!hasRange) return; // quit early if we don't have a valid range
 
       // calculate current brush extents using x scale
-      var extents = activeRange.map(x.invert);
+      let extents = activeRange.map(x.invert);
 
       // if rounding fn supplied, then snap to rounded extents
       // and move brush rect to reflect rounded range bounds if it was set by user interaction
