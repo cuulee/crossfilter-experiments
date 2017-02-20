@@ -1,11 +1,13 @@
 // (It's CSV, but GitHub Pages only gzip's JSON at the moment.)
 d3.csv("https://alexmacy.github.io/crossfilter/flights-3m.json", (error, flights) => {
-console.log(flights.length)
+  console.log(flights.length)
+
   // Various formatters.
-  var formatNumber = d3.format(",d"),
-      formatChange = d3.format("+,d"),
-      formatDate = d3.timeFormat("%B %d, %Y"),
-      formatTime = d3.timeFormat("%I:%M %p");
+  var formatNumber = d3.format(",d");
+
+  var formatChange = d3.format("+,d");
+  var formatDate = d3.timeFormat("%B %d, %Y");
+  var formatTime = d3.timeFormat("%I:%M %p");
 
   // A nest operator, for grouping the flight list.
   var nestByDate = d3.nest()
@@ -20,16 +22,17 @@ console.log(flights.length)
   });
 
   // Create the crossfilter for the relevant dimensions and groups.
-  var flight = crossfilter(flights),
-      all = flight.groupAll(),
-      date = flight.dimension(d => d.date),
-      dates = date.group(d3.timeDay),
-      hour = flight.dimension(d => d.date.getHours() + d.date.getMinutes() / 60),
-      hours = hour.group(Math.floor),
-      delay = flight.dimension(d => Math.max(-60, Math.min(149, d.delay))),
-      delays = delay.group(d => Math.floor(d / 10) * 10),
-      distance = flight.dimension(d => Math.min(1999, d.distance)),
-      distances = distance.group(d => Math.floor(d / 50) * 50);
+  var flight = crossfilter(flights);
+
+  var all = flight.groupAll();
+  var date = flight.dimension(d => d.date);
+  var dates = date.group(d3.timeDay);
+  var hour = flight.dimension(d => d.date.getHours() + d.date.getMinutes() / 60);
+  var hours = hour.group(Math.floor);
+  var delay = flight.dimension(d => Math.max(-60, Math.min(149, d.delay)));
+  var delays = delay.group(d => Math.floor(d / 10) * 10);
+  var distance = flight.dimension(d => Math.min(1999, d.distance));
+  var distances = distance.group(d => Math.floor(d / 50) * 50);
 
   var charts = [
 
@@ -167,29 +170,29 @@ console.log(flights.length)
   function barChart() {
     if (!barChart.id) barChart.id = 0;
 
-    var margin = {top: 10, right: 10, bottom: 20, left: 10},
-        x,
-        y = d3.scaleLinear().range([100, 0]),
-        id = barChart.id++,
-        axis = d3.axisBottom(),
-        brush = d3.brushX(),
-        brushDirty,
-        dimension,
-        group,
-        round,
-        gBrush;
+    var margin = {top: 10, right: 10, bottom: 20, left: 10};
+    var x;
+    var y = d3.scaleLinear().range([100, 0]);
+    var id = barChart.id++;
+    var axis = d3.axisBottom();
+    var brush = d3.brushX();
+    var brushDirty;
+    var dimension;
+    var group;
+    var round;
+    var gBrush;
 
     function chart(div) {
-      var width = x.range()[1],
-          height = y.range()[0];
+      var width = x.range()[1];
+      var height = y.range()[0];
 
       brush.extent([[0, 0], [width, height]])
 
       y.domain([0, group.top(1)[0].value]);
 
       div.each(function() {
-        var div = d3.select(this),
-            g = div.select("g");
+        var div = d3.select(this);
+        var g = div.select("g");
 
         // Create the skeletal chart.
         if (g.empty()) {
@@ -266,10 +269,10 @@ console.log(flights.length)
       });
 
       function barPath(groups) {
-        var path = [],
-            i = -1,
-            n = groups.length,
-            d;
+        var path = [];
+        var i = -1;
+        var n = groups.length;
+        var d;
         while (++i < n) {
           d = groups[i];
           path.push("M", x(d.key), ",", height, "V", y(d.value), "h9V", height);
@@ -278,9 +281,9 @@ console.log(flights.length)
       }
 
       function resizePath(d) {
-        var e = +(d.type == "e"),
-            x = e ? 1 : -1,
-            y = height / 3;
+        var e = +(d.type == "e");
+        var x = e ? 1 : -1;
+        var y = height / 3;
         return "M" + (.5 * x) + "," + y
             + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6)
             + "V" + (2 * y - 6)
