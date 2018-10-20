@@ -25,17 +25,18 @@ d3.csv('./flights-3m.json', (error, flights) => {
   // Create the crossfilter for the relevant dimensions and groups.
   const flight = crossfilter(flights)
 
-  const all = flight.groupAll()
-  const date = flight.dimension(d => d.date)
-  const dates = date.group(d3.timeDay)
-  const hour = flight.dimension(
-    d => d.date.getHours() + d.date.getMinutes() / 60
-  )
-  const hours = hour.group(Math.floor)
-  const delay = flight.dimension(d => Math.max(-60, Math.min(149, d.delay)))
-  const delays = delay.group(d => Math.floor(d / 10) * 10)
-  const distance = flight.dimension(d => Math.min(1999, d.distance))
-  const distances = distance.group(d => Math.floor(d / 50) * 50)
+  // store dimensions in an object
+  const d8s = {}
+
+  d8s.all = flight.groupAll()
+  d8s.date = flight.dimension(d => d.date)
+  d8s.dates = d8s.date.group(d3.timeDay)
+  d8s.hour = flight.dimension(d => d.date.getHours() + d.date.getMinutes() / 60)
+  d8s.hours = d8s.hour.group(Math.floor)
+  d8s.delay = flight.dimension(d => Math.max(-60, Math.min(149, d.delay)))
+  d8s.delays = d8s.delay.group(d => Math.floor(d / 10) * 10)
+  d8s.distance = flight.dimension(d => Math.min(1999, d.distance))
+  d8s.distances = d8s.distance.group(d => Math.floor(d / 50) * 50)
 
   // const startDateInitValue = new Date(2001, 1, 1)
   // const endDateInitValue = new Date(2001, 2, 1)
@@ -46,8 +47,8 @@ d3.csv('./flights-3m.json', (error, flights) => {
 
   const charts = [
     barChart()
-      .dimension(hour)
-      .group(hours)
+      .dimension(d8s.hour)
+      .group(d8s.hours)
       .x(
         d3
           .scaleLinear()
@@ -56,8 +57,8 @@ d3.csv('./flights-3m.json', (error, flights) => {
       ),
 
     barChart()
-      .dimension(delay)
-      .group(delays)
+      .dimension(d8s.delay)
+      .group(d8s.delays)
       .x(
         d3
           .scaleLinear()
@@ -66,8 +67,8 @@ d3.csv('./flights-3m.json', (error, flights) => {
       ),
 
     barChart()
-      .dimension(distance)
-      .group(distances)
+      .dimension(d8s.distance)
+      .group(d8s.distances)
       .x(
         d3
           .scaleLinear()
@@ -76,8 +77,8 @@ d3.csv('./flights-3m.json', (error, flights) => {
       ),
 
     barChart()
-      .dimension(date)
-      .group(dates)
+      .dimension(d8s.date)
+      .group(d8s.dates)
       .round(d3.timeDay.round)
       .x(
         d3
@@ -87,6 +88,14 @@ d3.csv('./flights-3m.json', (error, flights) => {
       )
     // .filter([startDateInitValue, endDateInitValue])
   ]
+
+  // read the query string in the url
+  // parse out and apply any filters found there
+  const url = new URL(window.location)
+  const params = new URLSearchParams(url.search)
+  for (let entry of params.entries()) {
+    console.log('entry', entry)
+  }
 
   // Given our array of charts, which we assume are in the same order as the
   // .chart elements in the DOM, bind the charts to the DOM and render them.
@@ -110,7 +119,7 @@ d3.csv('./flights-3m.json', (error, flights) => {
   function renderAll() {
     chart.each(render)
     list.each(render)
-    d3.select('#active').text(formatNumber(all.value()))
+    d3.select('#active').text(formatNumber(d8s.all.value()))
   }
 
   // Like d3.timeFormat, but faster.
@@ -138,7 +147,7 @@ d3.csv('./flights-3m.json', (error, flights) => {
   }
 
   function flightList(div) {
-    const flightsByDate = nestByDate.entries(date.top(40))
+    const flightsByDate = nestByDate.entries(d8s.date.top(40))
 
     div.each(function() {
       const date = d3
@@ -378,13 +387,15 @@ d3.csv('./flights-3m.json', (error, flights) => {
         .attr('x', activeRange[0])
         .attr('width', activeRange[1] - activeRange[0])
 
-      console.log('title', title)
-      console.log('extents', extents)
       const chartKey = encodeURIComponent(title.toLowerCase())
       const extentValueString = `${encodeURIComponent(
         extents[0]
       )}+${encodeURIComponent(extents[1])}`
-      // updateQueryString(chartKey, extentValueString)
+
+      console.log('title', title)
+      console.log('chartKey', chartKey)
+      console.log('extents', extents)
+      updateQueryString(chartKey, extentValueString)
 
       // filter the active dimension to the range extents
       dimension.filterRange(extents)
