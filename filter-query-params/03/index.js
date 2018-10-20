@@ -37,12 +37,12 @@ d3.csv('./flights-3m.json', (error, flights) => {
   const distance = flight.dimension(d => Math.min(1999, d.distance))
   const distances = distance.group(d => Math.floor(d / 50) * 50)
 
-  const startDateInitValue = new Date(2001, 1, 1)
-  const endDateInitValue = new Date(2001, 2, 1)
-  const startDateString = startDateInitValue.toISOString()
-  const endDateString = endDateInitValue.toISOString()
+  // const startDateInitValue = new Date(2001, 1, 1)
+  // const endDateInitValue = new Date(2001, 2, 1)
+  // const startDateString = startDateInitValue.toISOString()
+  // const endDateString = endDateInitValue.toISOString()
 
-  updateQueryString('date', `${startDateString}--${endDateString}`)
+  // updateQueryString('date', `${startDateString}--${endDateString}`)
 
   const charts = [
     barChart()
@@ -85,7 +85,7 @@ d3.csv('./flights-3m.json', (error, flights) => {
           .domain([new Date(2001, 0, 1), new Date(2001, 3, 1)])
           .rangeRound([0, 10 * 90])
       )
-      .filter([startDateInitValue, endDateInitValue])
+    // .filter([startDateInitValue, endDateInitValue])
   ]
 
   // Given our array of charts, which we assume are in the same order as the
