@@ -96,15 +96,26 @@ d3.csv('./flights-3m.json', (error, flights) => {
     date: charts[3]
   }
 
+  const titleKeyHash = {
+    'distance (mi.)': 'distance',
+    'arrival delay (min.)': 'delay',
+    'time of day': 'hour',
+    date: 'date'
+  }
+
   // read the query string in the url
   // parse out and apply any filters found there
   const url = new URL(window.location)
   const params = new URLSearchParams(url.search)
+  let title
   let dimensionKey
   let extent
+
   for (let entry of params.entries()) {
     console.log('entry', entry)
-    dimensionKey = decodeURIComponent(entry[0])
+    title = decodeURIComponent(entry[0])
+    dimensionKey = titleKeyHash[title]
+    console.log('dimensionKey', dimensionKey)
     extent = entry[1].split('--').map(v => decodeURIComponent(v))
     console.log('extent parsed from url.search', extent)
     if (dimensionKey === 'date') extent = extent.map(v => new Date(v))
