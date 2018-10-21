@@ -1,7 +1,6 @@
 /* global d3 crossfilter reset */
 
-// (It's CSV, but GitHub Pages only gzip's JSON at the moment.)
-d3.csv('./flights-3m.json', (error, flights) => {
+d3.csv('./flights-3m.csv', (error, flights) => {
   console.log(flights.length)
 
   // Various formatters.
