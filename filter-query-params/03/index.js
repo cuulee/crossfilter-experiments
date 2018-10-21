@@ -38,13 +38,6 @@ d3.csv('./flights-3m.json', (error, flights) => {
   d8s.distance = flight.dimension(d => Math.min(1999, d.distance))
   d8s.distances = d8s.distance.group(d => Math.floor(d / 50) * 50)
 
-  // const startDateInitValue = new Date(2001, 1, 1)
-  // const endDateInitValue = new Date(2001, 2, 1)
-  // const startDateString = startDateInitValue.toISOString()
-  // const endDateString = endDateInitValue.toISOString()
-
-  // updateQueryString('date', `${startDateString}--${endDateString}`)
-
   const charts = [
     barChart()
       .dimension(d8s.hour)
@@ -86,7 +79,6 @@ d3.csv('./flights-3m.json', (error, flights) => {
           .domain([new Date(2001, 0, 1), new Date(2001, 3, 1)])
           .rangeRound([0, 10 * 90])
       )
-    // .filter([startDateInitValue, endDateInitValue])
   ]
 
   const chartsByDimension = {
