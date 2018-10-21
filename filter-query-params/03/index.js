@@ -93,8 +93,16 @@ d3.csv('./flights-3m.json', (error, flights) => {
   // parse out and apply any filters found there
   const url = new URL(window.location)
   const params = new URLSearchParams(url.search)
+  let dimensionKey
+  let extent
   for (let entry of params.entries()) {
     console.log('entry', entry)
+    dimensionKey = decodeURIComponent(entry[0])
+    extent = entry[1].split('--').map(v => decodeURIComponent(v))
+    console.log('extent parsed from url.search', extent)
+    if (dimensionKey === 'date') extent = extent.map(v => new Date(v))
+    console.log('extent after formatting', extent)
+    d8s[dimensionKey].filterRange(extent)
   }
 
   // Given our array of charts, which we assume are in the same order as the
@@ -390,7 +398,7 @@ d3.csv('./flights-3m.json', (error, flights) => {
       const chartKey = encodeURIComponent(title.toLowerCase())
       const extentValueString = `${encodeURIComponent(
         extents[0]
-      )}+${encodeURIComponent(extents[1])}`
+      )}--${encodeURIComponent(extents[1])}`
 
       console.log('title', title)
       console.log('chartKey', chartKey)
