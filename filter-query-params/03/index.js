@@ -89,6 +89,13 @@ d3.csv('./flights-3m.json', (error, flights) => {
     // .filter([startDateInitValue, endDateInitValue])
   ]
 
+  const chartsByDimension = {
+    hour: charts[0],
+    delay: charts[1],
+    distance: charts[2],
+    date: charts[3]
+  }
+
   // read the query string in the url
   // parse out and apply any filters found there
   const url = new URL(window.location)
@@ -102,7 +109,11 @@ d3.csv('./flights-3m.json', (error, flights) => {
     console.log('extent parsed from url.search', extent)
     if (dimensionKey === 'date') extent = extent.map(v => new Date(v))
     console.log('extent after formatting', extent)
-    d8s[dimensionKey].filterRange(extent)
+
+    // apply the filter found in the query string
+    if (d8s[dimensionKey]) d8s[dimensionKey].filterRange(extent)
+    if (chartsByDimension[dimensionKey])
+      chartsByDimension[dimensionKey].filter(extent)
   }
 
   // Given our array of charts, which we assume are in the same order as the
