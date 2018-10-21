@@ -1,3 +1,13 @@
+this iteration stores the extent of each chart filter in the url query string, so that URLs to unique filter views can be shared.
+
+this iteration was motivated by a desire to be able to generate a downloadable image or document of the crossfilter dashboard for the user, at the current filter state. storing the filter states in the url is one way to communicate to the screenshot server how the dashboard should look when the server captures the screenshot.
+
+I encourage you to read more about [URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) and the browser history [pushState() method](https://developer.mozilla.org/en-US/docs/Web/API/History_API#The_pushState()_method) used to read and write the page's url without triggering a full page reload.
+
+an iteration on [Crossfilter Demo | es2015 d3v4](https://bl.ocks.org/micahstubbs/66db7c01723983ff028584b6f304a54a) from [@micahstubbs](https://twitter.com/micahstubbs)
+
+---
+
 this iteration
 
 - moves css into index.css
